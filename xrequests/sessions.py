@@ -1,12 +1,12 @@
+from .exceptions import *
+from .structures import CaseInsensitiveDict
+from .models import Response
+from urllib.parse import urlparse
 import socks
 import ssl
 import brotli
 import gzip
 import zlib
-from .exceptions import *
-from .structures import CaseInsensitiveDict
-from .models import Response
-from urllib.parse import urlparse
 
 protocol_to_proxy_type = {
     "http": socks.HTTP,
