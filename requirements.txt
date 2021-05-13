@@ -1,0 +1,4 @@
+zlib
+gzip
+brotli
+pysocks
