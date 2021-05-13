@@ -62,9 +62,8 @@ class Session:
         conn_reused = addr in self.addr_to_conn
         while True:
             try:
-                if addr in self.addr_to_conn:
-                    conn = self.addr_to_conn[addr]
-                else:
+                conn = self.addr_to_conn.get(addr)
+                if conn is None:
                     conn = self._create_socket(
                         addr,
                         timeout=timeout,
