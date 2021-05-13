@@ -1,5 +1,5 @@
 # xrequests
-A lazy, minimalist, but fast requests module for Python
+A lazy, minimalist, but fast HTTP request module for Python
 
 ```python
 import xrequests
