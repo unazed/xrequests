@@ -1,4 +1,3 @@
-zlib
 gzip
 brotli
 pysocks
