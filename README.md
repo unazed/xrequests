@@ -1,6 +1,10 @@
 # xrequests
 A lazy, minimalist, but fast HTTP request module for Python 3.4+
 
+Popular modules such as [requests](https://github.com/psf/requests) don't perform well in multi-threaded scenarios, xrequests aims to be the solution to this problem.
+
+![Graph](https://github.com/h0nde/xrequests/blob/main/perfomance_graph.png)
+
 ```python
 import xrequests
 
