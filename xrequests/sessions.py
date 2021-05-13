@@ -102,10 +102,7 @@ class Session:
 
     def _prepare_request(self, version, method, path, headers, content):
         request = "%s %s HTTP/%s\r\n" % (
-            method,
-            path,
-            version
-        )
+            method, path, version)
 
         for header, value in headers.items():
             request += "%s: %s\r\n" % (header, value)
@@ -176,13 +173,13 @@ class Session:
 
     def request(self, method, url, headers=None, content=None):
         parsed_url = urlparse(url)
-        if not isinstance(headers, CaseInsensitiveDict):
-            headers = CaseInsensitiveDict(headers)
         ssl_enabled = "https" == parsed_url.scheme
         addr = (
             parsed_url.hostname.lower(),
             parsed_url.port or {"s":443,"":80}.get(parsed_url.scheme[4:])
         )
+        if not isinstance(headers, CaseInsensitiveDict):
+            headers = CaseInsensitiveDict(headers)
 
         request = self._prepare_request(
             version="1.1",
