@@ -1,3 +1,2 @@
-gzip
 brotli
 pysocks
