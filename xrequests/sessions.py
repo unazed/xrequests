@@ -171,25 +171,25 @@ class Session:
         if headers.get("transfer-encoding") == "chunked":
             while True:
                 chunk = conn.recv(self.max_chunk_size)
-                if chunk == b"" or chunk == b"0\r\n\r\n":
+                if len(chunk) == 0 or chunk == b"0\r\n\r\n":
                     break
                 data += chunk
 
             raw = data
             data = b""
-
             while raw:
                 length, raw = raw.split(b"\r\n", 1)
                 length = int(length, 16)
                 chunk, raw = raw[:length], raw[length+2:]
                 data += chunk
+            del raw
                 
         else:
             goal = int(headers["content-length"])
             while goal > len(data):
                 chunk = conn.recv(min(goal-len(data), self.max_chunk_size))
                 if len(chunk) == 0:
-                    raise RequestException("Malformed chunk")
+                    raise RequestException("Empty chunk")
                 data += chunk
 
         if "content-encoding" in headers and self.decode_content:
@@ -205,6 +205,9 @@ class Session:
             content = gzip.compress(content)
         elif encoding == "deflate":
             content = zlib.compress(content)
+        else:
+            raise RequestException(
+                "Unknown encoding type '%s' while encoding content" % (encoding))
         
         return content
 
@@ -215,5 +218,8 @@ class Session:
             content = gzip.decompress(content)
         elif encoding == "deflate":
             content = zlib.decompress(content)
+        else:
+            raise RequestException(
+                "Unknown encoding type '%s' while decoding content" % (encoding))
         
         return content
