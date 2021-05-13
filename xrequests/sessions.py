@@ -34,8 +34,55 @@ class Session:
         self.ssl_verify = ssl_verify
 
 
+    def request(self, method, url, headers=None, content=None):
+        parsed_url = urlparse(url)
+        ssl_enabled = "https" == parsed_url.scheme
+        addr = (
+            parsed_url.hostname.lower(),
+            parsed_url.port or {"s":443,"":80}.get(parsed_url.scheme[4:])
+        )
+
+        if not isinstance(headers, CaseInsensitiveDict):
+            headers = CaseInsensitiveDict(headers)
+
+        request = self._prepare_request(
+            method=method,
+            path=parsed_url.path \
+                + ("?" + parsed_url.query if parsed_url.query else ""),
+            version="1.1",
+            headers=headers,
+            content=content
+        )
+        
+        conn_reused = addr in self.addr_to_conn
+        while True:
+            try:
+                if addr in self.addr_to_conn:
+                    conn = self.addr_to_conn[addr]
+                else:
+                    conn = self._create_socket(
+                        addr,
+                        ssl_wrap=ssl_enabled,
+                        ssl_verify=self.ssl_verify)
+                    self.addr_to_conn[addr] = conn
+                
+                self._send(conn, request)
+                return Response(*self._get_response(conn))
+
+            except Exception as err:
+                if addr in self.addr_to_conn:
+                    self.addr_to_conn.pop(addr)
+
+                if not conn_reused:
+                    if not isinstance(err, RequestException):
+                        err = RequestException(err)
+                    raise
+                
+                conn_reused = False
+
+
     def _create_socket(self, dest_addr, timeout=None, ssl_wrap=True,
-                           ssl_verify=True):
+                       ssl_verify=True):
         sock = socks.socksocket()
 
         if timeout or self.timeout:
@@ -75,32 +122,7 @@ class Session:
         return sock
 
 
-    def _encode_content(self, content, encoding):
-        encoding = encoding.lower()
-
-        if encoding == "br":
-            content = brotli.compress(content)
-        elif encoding == "gzip":
-            content = gzip.compress(content)
-        elif encoding == "deflate":
-            content = zlib.compress(content)
-        
-        return content
-
-    def _decode_content(self, content, encoding):
-        encoding = encoding.lower()
-
-        if encoding == "br":
-            content = brotli.decompress(content)
-        elif encoding == "gzip":
-            content = gzip.decompress(content)
-        elif encoding == "deflate":
-            content = zlib.decompress(content)
-        
-        return content
-
-
-    def _prepare_request(self, version, method, path, headers, content):
+    def _prepare_request(self, method, path, version, headers, content):
         request = "%s %s HTTP/%s\r\n" % (
             method, path, version)
 
@@ -121,7 +143,7 @@ class Session:
     def _send(self, conn, data):
         conn.send(data)
 
-    
+
     def _get_response(self, conn):
         resp = conn.recv(self.max_chunk_size)
 
@@ -169,48 +191,24 @@ class Session:
             data = self._decode_content(data, headers["content-encoding"])
 
         return int(status), message, headers, data
-    
 
-    def request(self, method, url, headers=None, content=None):
-        parsed_url = urlparse(url)
-        ssl_enabled = "https" == parsed_url.scheme
-        addr = (
-            parsed_url.hostname.lower(),
-            parsed_url.port or {"s":443,"":80}.get(parsed_url.scheme[4:])
-        )
-        if not isinstance(headers, CaseInsensitiveDict):
-            headers = CaseInsensitiveDict(headers)
 
-        request = self._prepare_request(
-            version="1.1",
-            method=method,
-            path=parsed_url.path \
-                + ("?" + parsed_url.query if parsed_url.query else ""),
-            headers=headers,
-            content=content
-        )
+    def _encode_content(self, content, encoding):
+        if encoding == "br":
+            content = brotli.compress(content)
+        elif encoding == "gzip":
+            content = gzip.compress(content)
+        elif encoding == "deflate":
+            content = zlib.compress(content)
         
-        conn_reused = addr in self.addr_to_conn
+        return content
 
-        while True:
-            try:
-                if addr in self.addr_to_conn:
-                    conn = self.addr_to_conn[addr]
-                else:
-                    conn = self._create_socket(
-                        addr,
-                        ssl_wrap=ssl_enabled,
-                        ssl_verify=self.ssl_verify)
-                    self.addr_to_conn[addr] = conn
-                
-                self._send(conn, request)
-                return Response(*self._get_response(conn))
-
-            except Exception as err:
-                if addr in self.addr_to_conn:
-                    self.addr_to_conn.pop(addr)
-                if not conn_reused:
-                    if not isinstance(err, RequestException):
-                        err = RequestException(err)
-                    raise
-                conn_reused = False
+    def _decode_content(self, content, encoding):
+        if encoding == "br":
+            content = brotli.decompress(content)
+        elif encoding == "gzip":
+            content = gzip.decompress(content)
+        elif encoding == "deflate":
+            content = zlib.decompress(content)
+        
+        return content
