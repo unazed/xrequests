@@ -30,13 +30,13 @@ class Session:
         encode_content = encode_content if encode_content is not None else True
         ssl_verify = ssl_verify if ssl_verify is not None else True
 
-        self.timeout = timeout
         self.proxy_url = proxy_url
-        self.addr_to_conn = {}
+        self.timeout = timeout
         self.max_chunk_size = chunk_size
         self.decode_content = decode_content
         self.encode_content = encode_content
         self.ssl_verify = ssl_verify
+        self.addr_to_conn = {}
 
 
     def request(self, method, url, headers=None, content=None):
