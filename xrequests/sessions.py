@@ -16,6 +16,11 @@ protocol_to_proxy_type = {
     "socks5h": socks.SOCKS5
 }
 
+scheme_to_port = {
+    "http": 80,
+    "https": 443
+}
+
 class Session:
     def __init__(self, proxy_url=None, timeout=None, chunk_size=None,
                  decode_content=None, encode_content=None, ssl_verify=None):
@@ -39,7 +44,7 @@ class Session:
         ssl_enabled = "https" == parsed_url.scheme
         addr = (
             parsed_url.hostname.lower(),
-            parsed_url.port or {"s":443,"":80}[parsed_url.scheme[4:]]
+            parsed_url.port or scheme_to_port[parsed_url.scheme.lower()]
         )
 
         if not isinstance(headers, CaseInsensitiveDict):
