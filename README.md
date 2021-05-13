@@ -4,8 +4,7 @@ A lazy, minimalist, but fast requests module for Python
 ```python
 import xrequests
 
-session = xrequests.Session(
- proxy_url="http://127.0.0.1:8888", ssl_verify=False)
+session = xrequests.Session(proxy_url=None)
 
 resp = session.request("GET", "https://google.com/")
 print(resp.status)
