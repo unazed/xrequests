@@ -39,7 +39,7 @@ class Session:
         ssl_enabled = "https" == parsed_url.scheme
         addr = (
             parsed_url.hostname.lower(),
-            parsed_url.port or {"s":443,"":80}.get(parsed_url.scheme[4:])
+            parsed_url.port or {"s":443,"":80}[parsed_url.scheme[4:]]
         )
 
         if not isinstance(headers, CaseInsensitiveDict):
@@ -77,7 +77,7 @@ class Session:
                     if not isinstance(err, RequestException):
                         err = RequestException(err)
                     raise
-                
+
                 conn_reused = False
 
 
