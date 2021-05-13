@@ -126,7 +126,7 @@ class Session:
 
     
     def _get_response(self, conn):
-        resp = conn.recv(1024 ** 2)
+        resp = conn.recv(self.max_chunk_size)
 
         if len(resp) <= 10:
             raise RequestException("Invalid response", resp)
@@ -146,7 +146,7 @@ class Session:
         
         if headers.get("transfer-encoding") == "chunked":
             while True:
-                chunk = conn.recv(1024 ** 2)
+                chunk = conn.recv(self.max_chunk_size)
                 if chunk == b"" or chunk == b"0\r\n\r\n":
                     break
                 data += chunk
