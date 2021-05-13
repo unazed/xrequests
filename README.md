@@ -19,7 +19,7 @@ Popular modules such as [requests](https://github.com/psf/requests) don't perfor
 Some quirks:
 - Sessions instances are NOT thread-safe
 - Host headers are to be included manually
-- No retry attempts will be made, unless a connection is established from another request
+- No retry attempts will be made, unless a connection is established from a previous request
 - All exceptions are wrapped under RequestException, even ones from third-party modules
 
 Supports:
