@@ -6,7 +6,8 @@ import xrequests
 
 session = xrequests.Session(proxy_url=None)
 
-resp = session.request("GET", "https://api.ipify.org/?format=json")
+resp = session.request("GET", "https://api.ipify.org/?format=json",
+                       headers={"Host": "api.ipify.org"})
 print(resp.status)
 print(resp.content)
 ```
