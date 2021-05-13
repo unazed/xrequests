@@ -1,2 +1,2 @@
 from .sessions import Session
-import exceptions
+from . import exceptions
