@@ -39,7 +39,7 @@ class Session:
         self.addr_to_conn = {}
 
 
-    def request(self, method, url, headers=None, content=None):
+    def request(self, method, url, headers=None, content=None, timeout=None):
         parsed_url = urlparse(url)
         ssl_enabled = "https" == parsed_url.scheme
         addr = (
@@ -67,6 +67,7 @@ class Session:
                 else:
                     conn = self._create_socket(
                         addr,
+                        timeout=timeout,
                         ssl_wrap=ssl_enabled,
                         ssl_verify=self.ssl_verify)
                     self.addr_to_conn[addr] = conn
