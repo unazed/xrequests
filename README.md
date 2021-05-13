@@ -15,7 +15,7 @@ print(resp.content)
 Some quirks:
 - Host headers are to be included manually
 - No retry attempts will be made, unless a connection is established from another request
-- All exceptions are wrapped under RequestException
+- All exceptions are wrapped under RequestException, even ones from third-party modules
 
 Supports:
 - HTTP, SOCKS4 and SOCKS5 proxies
