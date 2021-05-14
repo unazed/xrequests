@@ -121,9 +121,7 @@ class Session:
 
             sock = context.wrap_socket(
                 sock,
-                server_side=False,
-                server_hostname=dest_addr[0]
-            )
+                server_hostname=dest_addr[0])
 
         return sock
 
