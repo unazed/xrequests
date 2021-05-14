@@ -25,7 +25,7 @@ scheme_to_port = {
 class Session:
     def __init__(self, proxy_url=None, timeout=None, chunk_size=None,
                  decode_content=None, encode_content=None, ssl_verify=None):
-        timeout = timeout if timeout is not None else 5
+        timeout = timeout if timeout is not None else 60
         chunk_size = chunk_size if chunk_size is not None else (1024 ** 2)
         decode_content = decode_content if decode_content is not None else True
         encode_content = encode_content if encode_content is not None else True
