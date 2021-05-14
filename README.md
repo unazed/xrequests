@@ -23,10 +23,10 @@ Some quirks:
 - All exceptions are wrapped under RequestException, even ones from third-party modules
 
 Supports:
-- HTTP, SOCKS4 and SOCKS5 proxies
+- HTTP, SOCKS4 and SOCKS5 proxies via `proxy_url`
 - Chunked transfer encoding
 - Brotli, gzip and deflate content en/decoding
-- Unverified SSL
+- Unverified SSL via `ssl_verify=False`
 
 To be implemented:
 
