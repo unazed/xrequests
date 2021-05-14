@@ -66,7 +66,7 @@ class Session:
                 if conn is None:
                     conn = self._create_socket(
                         addr,
-                        timeout=timeout,
+                        timeout=timeout or self.timeout,
                         ssl_wrap=ssl_enabled,
                         ssl_verify=self.ssl_verify)
                     self.addr_to_conn[addr] = conn
@@ -90,8 +90,8 @@ class Session:
                        ssl_verify=True):
         sock = socks.socksocket()
 
-        if timeout or self.timeout:
-            sock.settimeout(timeout or self.timeout)
+        if timeout:
+            sock.settimeout(timeout)
         
         if self.proxy_url is not None:
             proxy_url = urlparse(self.proxy_url)
