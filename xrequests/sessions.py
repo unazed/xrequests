@@ -49,7 +49,7 @@ class Session:
         )
 
         if not isinstance(headers, CaseInsensitiveDict):
-            headers = CaseInsensitiveDict(headers)
+            headers = {}# CaseInsensitiveDict(headers)
 
         request = self._prepare_request(
             method=method,
