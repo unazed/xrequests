@@ -45,7 +45,7 @@ class Session:
     def request(self, method, url, headers=None, content=None, timeout=None):
         parsed_url = urlparse(url)
         ssl_enabled = "https" == parsed_url.scheme.lower()
-        addr = (
+        host_addr = (
             parsed_url.hostname.lower(),
             parsed_url.port or scheme_to_port[parsed_url.scheme.lower()]
         )
@@ -62,24 +62,24 @@ class Session:
             content=content
         )
         
-        conn_reused = addr in self._addr_to_conn
+        conn_reused = host_addr in self._addr_to_conn
         while True:
             try:
-                conn = self._addr_to_conn.get(addr)
+                conn = self._addr_to_conn.get(host_addr)
                 if conn is None:
                     conn = self._create_socket(
-                        addr,
+                        host_addr,
                         timeout=timeout or self.timeout,
                         ssl_wrap=ssl_enabled,
                         ssl_verify=self.ssl_verify)
-                    self._addr_to_conn[addr] = conn
+                    self._addr_to_conn[host_addr] = conn
                 
                 self._send(conn, request)
                 return Response(*self._get_response(conn))
 
             except Exception as err:
-                if addr in self._addr_to_conn:
-                    self._addr_to_conn.pop(addr)
+                if host_addr in self._addr_to_conn:
+                    self._addr_to_conn.pop(host_addrs)
 
                 if not conn_reused:
                     if not isinstance(err, RequestException):
