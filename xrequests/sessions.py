@@ -42,13 +42,17 @@ class Session:
         self._unverified_context = ssl._create_unverified_context()
 
 
-    def request(self, method, url, headers=None, content=None, timeout=None):
+    def request(self, method, url, headers=None, content=None, timeout=None,
+                version=None):
         parsed_url = urlparse(url)
         ssl_enabled = "https" == parsed_url.scheme.lower()
         host_addr = (
             parsed_url.hostname.lower(),
             parsed_url.port or scheme_to_port[parsed_url.scheme.lower()]
         )
+
+        if version is None:
+            version = "1.1"
 
         if not isinstance(headers, CaseInsensitiveDict):
             headers = CaseInsensitiveDict(headers)
@@ -57,7 +61,7 @@ class Session:
             method=method,
             path=parsed_url.path \
                 + ("?" + parsed_url.query if parsed_url.query else ""),
-            version="1.1",
+            version=version,
             headers=headers,
             content=content
         )
