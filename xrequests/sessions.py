@@ -159,7 +159,7 @@ class Session:
         status, raw_headers = resp.split("\r\n", 1)
         _, status, message = status.split(" ", 2)
 
-        headers = {}#CaseInsensitiveDict()
+        headers = CaseInsensitiveDict()
         for header in raw_headers.splitlines():
             header, value = header.split(":", 1)
             if value.startswith(" "):
