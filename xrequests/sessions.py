@@ -97,19 +97,19 @@ class Session:
             sock.settimeout(timeout)
         
         if self.proxy_url is not None:
-            proxy_url = urlparse(self.proxy_url)
-            proxy_type = protocol_to_proxy_type.get(proxy_url.scheme.lower())
+            proxy = urlparse(self.proxy_url)
+            proxy_type = protocol_to_proxy_type.get(proxy.scheme.lower())
 
             if proxy_type is None:
                 raise Exception("'%s' is not a supported proxy scheme" % (
-                    proxy_url.scheme))
+                    proxy.scheme))
 
             sock.set_proxy(
                 proxy_type,
-                addr=proxy_url.hostname,
-                port=proxy_url.port,
-                username=proxy_url.username,
-                password=proxy_url.password,
+                addr=proxy.hostname,
+                port=proxy.port,
+                username=proxy.username,
+                password=proxy.password,
                 rdns=False
             )
 
