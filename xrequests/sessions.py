@@ -41,7 +41,7 @@ class Session:
 
     def request(self, method, url, headers=None, content=None, timeout=None):
         parsed_url = urlparse(url)
-        ssl_enabled = "https" == parsed_url.scheme
+        ssl_enabled = "https" == parsed_url.scheme.lower()
         addr = (
             parsed_url.hostname.lower(),
             parsed_url.port or scheme_to_port[parsed_url.scheme.lower()]
