@@ -37,7 +37,7 @@ class Session:
         self.decode_content = decode_content
         self.encode_content = encode_content
         self.ssl_verify = ssl_verify
-        self.addr_to_conn = {}
+        self._addr_to_conn = {}
         self._verified_context = ssl.create_default_context()
         self._unverified_context = ssl._create_unverified_context()
 
@@ -62,24 +62,24 @@ class Session:
             content=content
         )
         
-        conn_reused = addr in self.addr_to_conn
+        conn_reused = addr in self._addr_to_conn
         while True:
             try:
-                conn = self.addr_to_conn.get(addr)
+                conn = self._addr_to_conn.get(addr)
                 if conn is None:
                     conn = self._create_socket(
                         addr,
                         timeout=timeout or self.timeout,
                         ssl_wrap=ssl_enabled,
                         ssl_verify=self.ssl_verify)
-                    self.addr_to_conn[addr] = conn
+                    self._addr_to_conn[addr] = conn
                 
                 self._send(conn, request)
                 return Response(*self._get_response(conn))
 
             except Exception as err:
-                if addr in self.addr_to_conn:
-                    self.addr_to_conn.pop(addr)
+                if addr in self._addr_to_conn:
+                    self._addr_to_conn.pop(addr)
 
                 if not conn_reused:
                     if not isinstance(err, RequestException):
