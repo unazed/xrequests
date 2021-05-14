@@ -8,7 +8,7 @@ class Response:
         self.content = content
     
     def json(self):
-        return jsonload.load(self.content)
+        return jsonlib.load(self.content)
     
     @property
     def text(self):
