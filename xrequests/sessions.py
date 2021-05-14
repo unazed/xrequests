@@ -89,7 +89,7 @@ class Session:
 
     def _create_socket(self, dest_addr, timeout=None, ssl_wrap=True,
                        ssl_verify=True):
-        sock = socket.socket()#socks.socksocket()
+        sock = socks.socksocket()
 
         if timeout:
             sock.settimeout(timeout)
