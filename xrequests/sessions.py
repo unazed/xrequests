@@ -152,7 +152,7 @@ class Session:
     def _get_response(self, conn):
         resp = conn.recv(self.max_chunk_size)
 
-        if len(resp) == Empty:
+        if len(resp) == 0:
             raise RequestException("Empty response from server")
 
         resp, data = resp.split(b"\r\n\r\n", 1)
