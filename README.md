@@ -14,7 +14,7 @@ print(resp.content)
 
 Popular modules such as [requests](https://github.com/psf/requests) don't perform well in multi-threaded scenarios, xrequests aims to be the solution to this problem.
 
-![Graph](https://github.com/h0nde/xrequests/blob/main/perfomance_graph.png)
+![Graph](https://github.com/h0nde/xrequests/blob/main/performance_graph.png)
 
 Some quirks:
 - Sessions instances are NOT thread-safe
@@ -23,10 +23,10 @@ Some quirks:
 - All exceptions are wrapped under RequestException, even ones from third-party modules
 
 Supports:
-- HTTP, SOCKS4 and SOCKS5 proxies
+- HTTP, SOCKS4 and SOCKS5 proxies via `proxy_url`
 - Chunked transfer encoding
 - Brotli, gzip and deflate content en/decoding
-- Unverified SSL
+- Unverified SSL via `ssl_verify=False`
 
 To be implemented:
 
