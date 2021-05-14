@@ -38,6 +38,8 @@ class Session:
         self.encode_content = encode_content
         self.ssl_verify = ssl_verify
         self.addr_to_conn = {}
+        self._verified_context = ssl.create_default_context()
+        self._unverified_context = ssl._create_unverified_context()
 
 
     def request(self, method, url, headers=None, content=None, timeout=None):
@@ -49,7 +51,7 @@ class Session:
         )
 
         if not isinstance(headers, CaseInsensitiveDict):
-            headers = {}# CaseInsensitiveDict(headers)
+            headers = CaseInsensitiveDict(headers)
 
         request = self._prepare_request(
             method=method,
@@ -114,10 +116,8 @@ class Session:
         sock.connect(dest_addr)
 
         if ssl_wrap:
-            if ssl_verify:
-                context = ssl.create_default_context()
-            else:
-                context = ssl._create_unverified_context()
+            context = self._verified_context \
+                      if ssl_verify else self._unverified_context
 
             sock = context.wrap_socket(
                 sock,
