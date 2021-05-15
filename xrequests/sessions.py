@@ -209,7 +209,7 @@ class Session:
         resp, data = resp.split(b"\r\n\r\n", 1)
         resp = resp.decode()
         status, raw_headers = resp.split("\r\n", 1)
-        _, status, message = status.split(" ", 2)
+        version, status, message = status.split(" ", 2)
 
         headers = CaseInsensitiveDict()
         for header in raw_headers.splitlines():
