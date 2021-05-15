@@ -217,9 +217,7 @@ class Session:
             if value.startswith(" "):
                 value = value[1:]
             headers[header] = value
-        del raw_headers
         
-
         if "content-length" in headers:
             goal = int(headers["content-length"])
             while goal > len(data):
@@ -242,7 +240,6 @@ class Session:
                 length = int(length, 16)
                 chunk, raw = raw[:length], raw[length+2:]
                 data += chunk
-            del raw
 
         else:
             while True:
