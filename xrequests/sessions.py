@@ -82,7 +82,7 @@ class Session:
 
             except Exception as err:
                 if host_addr in self._addr_to_conn:
-                    self._addr_to_conn.pop(host_addrs)
+                    self._addr_to_conn.pop(host_addr)
 
                 if not conn_reused:
                     if not isinstance(err, RequestException):
