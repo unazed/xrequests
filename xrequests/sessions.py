@@ -146,7 +146,7 @@ class Session:
         if not addr in self._addr_to_conn:
             return
 
-        sock = _addr_to_conn[addr]
+        sock = self._addr_to_conn[addr]
         try:
             sock.shutdown(socket.SHUT_RDWR)
         except OSError:
