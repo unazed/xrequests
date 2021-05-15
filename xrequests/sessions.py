@@ -45,7 +45,6 @@ class Session:
     def request(self, method, url, headers=None, content=None, timeout=None,
                 version=None):
         parsed_url = urlparse(url)
-        ssl_enabled = "https" == parsed_url.scheme.lower()
         host_addr = (
             parsed_url.hostname.lower(),
             parsed_url.port or scheme_to_port[parsed_url.scheme.lower()]
@@ -74,7 +73,7 @@ class Session:
                     conn = self._create_socket(
                         host_addr,
                         timeout=timeout or self.timeout,
-                        ssl_wrap=ssl_enabled,
+                        ssl_wrap="https" == parsed_url.scheme.lower(),
                         ssl_verify=self.ssl_verify)
                     self._addr_to_conn[host_addr] = conn
                 
