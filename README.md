@@ -17,10 +17,10 @@ Popular modules such as [requests](https://github.com/psf/requests) don't perfor
 ![Graph](https://github.com/h0nde/xrequests/blob/main/performance_graph.png)
 
 Some quirks:
-- Sessions instances are NOT thread-safe
+- `Session` instances are NOT thread-safe
 - Host headers are to be included manually
 - No retry attempts will be made, unless a connection is established from a previous request
-- All exceptions are wrapped under RequestException, even ones from third-party modules
+- All exceptions are wrapped under `RequestException`, even ones from third-party modules
 
 Supports:
 - HTTP, SOCKS4 and SOCKS5 proxies via `proxy_url`
