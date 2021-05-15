@@ -22,11 +22,6 @@ scheme_to_port = {
     "https": 443
 }
 
-supported_schemes = (
-    "http",
-    "https"
-)
-
 class Session:
     def __init__(self, proxy_url=None, timeout=None, chunk_size=None,
                  decode_content=None, encode_content=None, ssl_verify=None):
@@ -61,7 +56,7 @@ class Session:
         parsed_url = urlparse(url)
         scheme = parsed_url.scheme.lower()
 
-        if not scheme in supported_schemes:
+        if not scheme in scheme_to_port:
             raise UnsupportedScheme("'%s' is not a supported scheme" % (scheme))
 
         host_addr = (
