@@ -6,6 +6,9 @@ class Response:
         self.message = message
         self.headers = headers
         self.content = content
+
+    def __repr__(self):
+        return "<Response [%d]>" % (self.status)
     
     def json(self):
         return jsonlib.loads(self.content)
