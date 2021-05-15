@@ -87,7 +87,7 @@ class Session:
                 if not conn_reused:
                     if not isinstance(err, RequestException):
                         err = RequestException(err)
-                    raise
+                    raise err
 
                 conn_reused = False
 
