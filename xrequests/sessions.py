@@ -147,11 +147,10 @@ class Session:
             return
 
         sock = _addr_to_conn[addr]
-        if not sock._closed:
-            try:
-                sock.shutdown(socket.SHUT_RDWR)
-            except OSError:
-                pass
+        try:
+            sock.shutdown(socket.SHUT_RDWR)
+        except OSError:
+            pass
         sock.close()
         sock.pop(addr, None)
 
