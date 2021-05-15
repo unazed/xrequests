@@ -56,7 +56,7 @@ class Session:
 
 
     def request(self, method, url, headers=None, content=None, timeout=None,
-                version=None):
+                version=None, ssl_verify=None):
         parsed_url = urlparse(url)
         scheme = parsed_url.scheme.lower()
 
@@ -67,6 +67,9 @@ class Session:
             parsed_url.hostname.lower(),
             parsed_url.port or scheme_to_port[scheme]
         )
+        
+        if ssl_verify is None:
+            ssl_verify = self.ssl_verify
 
         if version is None:
             version = "1.1"
@@ -92,7 +95,7 @@ class Session:
                         host_addr,
                         timeout=timeout or self.timeout,
                         ssl_wrap=("https" == scheme),
-                        ssl_verify=self.ssl_verify)
+                        ssl_verify=ssl_verify)
                     self._addr_to_conn[host_addr] = conn
                 
                 self._send(conn, request)
