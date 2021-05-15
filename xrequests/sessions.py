@@ -142,10 +142,12 @@ class Session:
         return self.request("DELETE", url, **kwargs)
 
 
-    def close(self, addr, shutdown=True):
+    def close(self, addr):
         if not addr in self._addr_to_conn:
             return
         
+        try:
+            self._addr_to_conn[addr].shutdown(socket.SHUT_RDWR)
         except:
             pass
         self._addr_to_conn[addr].close()
