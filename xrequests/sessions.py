@@ -21,6 +21,11 @@ scheme_to_port = {
     "https": 443
 }
 
+supported_schemes = (
+    "http",
+    "https"
+)
+
 class Session:
     def __init__(self, proxy_url=None, timeout=None, chunk_size=None,
                  decode_content=None, encode_content=None, ssl_verify=None):
@@ -53,9 +58,14 @@ class Session:
     def request(self, method, url, headers=None, content=None, timeout=None,
                 version=None):
         parsed_url = urlparse(url)
+        scheme = parsed_url.scheme.lower()
+
+        if not scheme in supported_schemes:
+            raise Exception("'%s' is not a supported protocol" % (scheme))
+
         host_addr = (
             parsed_url.hostname.lower(),
-            parsed_url.port or scheme_to_port[parsed_url.scheme.lower()]
+            parsed_url.port or scheme_to_port[scheme]
         )
 
         if version is None:
@@ -81,7 +91,7 @@ class Session:
                     conn = self._create_socket(
                         host_addr,
                         timeout=timeout or self.timeout,
-                        ssl_wrap=("https" == parsed_url.scheme.lower()),
+                        ssl_wrap=("https" == scheme),
                         ssl_verify=self.ssl_verify)
                     self._addr_to_conn[host_addr] = conn
                 
