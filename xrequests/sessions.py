@@ -218,6 +218,8 @@ class Session:
                 value = value[1:]
             headers[header] = value
         del raw_headers
+
+        print(headers)
         
         if headers.get("transfer-encoding") == "chunked":
             while True:
