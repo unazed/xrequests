@@ -218,8 +218,6 @@ class Session:
                 value = value[1:]
             headers[header] = value
         del raw_headers
-
-        print(headers)
         
         if headers.get("transfer-encoding") == "chunked":
             while True:
@@ -237,7 +235,7 @@ class Session:
                 data += chunk
             del raw
                 
-        else:
+        elif "content-length" in headers:
             goal = int(headers["content-length"])
             while goal > len(data):
                 chunk = conn.recv(min(goal-len(data), self.max_chunk_size))
