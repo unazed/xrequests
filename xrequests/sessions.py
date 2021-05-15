@@ -73,7 +73,7 @@ class Session:
                     conn = self._create_socket(
                         host_addr,
                         timeout=timeout or self.timeout,
-                        ssl_wrap="https" == parsed_url.scheme.lower(),
+                        ssl_wrap=("https" == parsed_url.scheme.lower()),
                         ssl_verify=self.ssl_verify)
                     self._addr_to_conn[host_addr] = conn
                 
