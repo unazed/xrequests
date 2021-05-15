@@ -139,7 +139,7 @@ class Session:
         request += "\r\n"
         request = request.encode("UTF-8")
 
-        if content:
+        if content is not None:
             if "content-encoding" in headers and self.encode_content:
                 content = self._encode_content(content, headers["content-encoding"])
             request += content
