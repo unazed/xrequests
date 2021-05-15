@@ -3,6 +3,7 @@ from .structures import CaseInsensitiveDict
 from .models import Response
 from urllib.parse import urlparse
 import socks
+import socket
 import ssl
 import brotli
 import gzip
@@ -139,6 +140,16 @@ class Session:
 
     def delete(self, url, **kwargs):
         return self.request("DELETE", url, **kwargs)
+
+
+    def close(self, addr, shutdown=True):
+        if not addr in self._addr_to_conn:
+            return
+        
+        except:
+            pass
+        self._addr_to_conn[addr].close()
+        self._addr_to_conn.pop(addr, None)
 
 
     def _create_socket(self, dest_addr, timeout=None, ssl_wrap=True,
