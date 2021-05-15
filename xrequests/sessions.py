@@ -2,7 +2,6 @@ from .exceptions import *
 from .structures import CaseInsensitiveDict
 from .models import Response
 from urllib.parse import urlparse
-import socket
 import socks
 import ssl
 import brotli
