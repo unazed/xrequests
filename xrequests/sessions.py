@@ -152,7 +152,7 @@ class Session:
         except OSError:
             pass
         sock.close()
-        sock.pop(addr, None)
+        self._addr_to_conn.pop(addr, None)
 
 
     def _create_socket(self, dest_addr, timeout=None, ssl_wrap=True,
