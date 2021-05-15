@@ -36,6 +36,7 @@ class Session:
         self.decode_content = decode_content
         self.encode_content = encode_content
         self.ssl_verify = ssl_verify
+        self._proxy = urlparse(proxy_url) if proxy_url is not None else None
         self._addr_to_conn = {}
         self._verified_context = ssl.create_default_context()
         self._unverified_context = ssl._create_unverified_context()
@@ -99,8 +100,8 @@ class Session:
         if timeout:
             sock.settimeout(timeout)
         
-        if self.proxy_url is not None:
-            proxy = urlparse(self.proxy_url)
+        if self._proxy is not None:
+            proxy = urlparse(self._proxy)
             proxy_type = protocol_to_proxy_type.get(proxy.scheme.lower())
 
             if proxy_type is None:
