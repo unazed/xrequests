@@ -219,7 +219,16 @@ class Session:
             headers[header] = value
         del raw_headers
         
-        if headers.get("transfer-encoding") == "chunked":
+
+        if "content-length" in headers:
+            goal = int(headers["content-length"])
+            while goal > len(data):
+                chunk = conn.recv(min(goal-len(data), self.max_chunk_size))
+                if len(chunk) == 0:
+                    raise RequestException("Empty chunk")
+                data += chunk
+    
+        elif headers.get("transfer-encoding") == "chunked":
             while True:
                 chunk = conn.recv(self.max_chunk_size)
                 if len(chunk) == 0 or chunk == b"0\r\n\r\n":
@@ -234,13 +243,12 @@ class Session:
                 chunk, raw = raw[:length], raw[length+2:]
                 data += chunk
             del raw
-                
-        elif "content-length" in headers:
-            goal = int(headers["content-length"])
-            while goal > len(data):
-                chunk = conn.recv(min(goal-len(data), self.max_chunk_size))
+
+        else:
+            while True:
+                chunk = conn.recv(self.max_chunk_size)
                 if len(chunk) == 0:
-                    raise RequestException("Empty chunk")
+                    break
                 data += chunk
 
         if "content-encoding" in headers and self.decode_content:
