@@ -61,7 +61,7 @@ class Session:
             path=parsed_url.path \
                 + ("?" + parsed_url.query if parsed_url.query else ""),
             version=version,
-            headers=headers.items(),
+            headers=headers,
             content=content
         )
         
@@ -133,7 +133,7 @@ class Session:
         request = "%s %s HTTP/%s\r\n" % (
             method, path, version)
 
-        for header, value in headers:
+        for header, value in headers.items():
             request += "%s: %s\r\n" % (header, value)
 
         request += "\r\n"
