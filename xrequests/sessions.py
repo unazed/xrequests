@@ -41,6 +41,14 @@ class Session:
         self._verified_context = ssl.create_default_context()
         self._unverified_context = ssl._create_unverified_context()
 
+    
+    def __enter__(self):
+        return self
+
+
+    def __exit__(self, *_):
+        return
+
 
     def request(self, method, url, headers=None, content=None, timeout=None,
                 version=None):
