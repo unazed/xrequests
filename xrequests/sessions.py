@@ -145,13 +145,15 @@ class Session:
     def close(self, addr):
         if not addr in self._addr_to_conn:
             return
-        
-        try:
-            self._addr_to_conn[addr].shutdown(socket.SHUT_RDWR)
-        except:
-            pass
-        self._addr_to_conn[addr].close()
-        self._addr_to_conn.pop(addr, None)
+
+        sock = _addr_to_conn[addr]
+        if not sock._closed:
+            try:
+                sock.shutdown(socket.SHUT_RDWR)
+            except OSError:
+                pass
+        sock.close()
+        sock.pop(addr, None)
 
 
     def _create_socket(self, dest_addr, timeout=None, ssl_wrap=True,
