@@ -24,7 +24,6 @@ Some quirks:
 
 Supports:
 - HTTP, SOCKS4 and SOCKS5 proxies via `proxy_url`
-- Chunked transfer encoding
 - Brotli, gzip and deflate compression algorithms
 - Unverified SSL via `ssl_verify=False`
 
