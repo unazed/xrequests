@@ -9,7 +9,7 @@ session = xrequests.Session(proxy_url=None, timeout=5)
 resp = session.request("GET", "https://api.ipify.org/?format=json",
                        headers={"Host": "api.ipify.org"})
 print(resp.status)
-print(resp.content)
+print(resp.json())
 ```
 
 Popular modules such as [requests](https://github.com/psf/requests) don't perform well in multi-threaded scenarios, xrequests aims to be the solution to this problem.
