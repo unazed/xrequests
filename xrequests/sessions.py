@@ -78,6 +78,9 @@ class Session:
         if not isinstance(headers, CaseInsensitiveDict):
             headers = CaseInsensitiveDict(headers)
 
+        if not "Host" in headers:
+            headers["Host"] = parsed_url.hostname
+        
         request = self._prepare_request(
             method=method,
             path=parsed_url.path \
@@ -197,6 +200,8 @@ class Session:
             method, path, version)
 
         for header, value in headers.items():
+            if value is None:
+                continue
             request += "%s: %s\r\n" % (header, value)
 
         request += "\r\n"
