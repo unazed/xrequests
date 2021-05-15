@@ -1,7 +1,7 @@
 class RequestException(Exception):
     pass
 
-class UnknownScheme(RequestException):
+class UnsupportedScheme(RequestException):
     pass
 
 class EmptyResponse(RequestException):
