@@ -61,7 +61,7 @@ class Session:
         scheme = parsed_url.scheme.lower()
 
         if not scheme in supported_schemes:
-            raise Exception("'%s' is not a supported protocol" % (scheme))
+            raise UnsupportedScheme("'%s' is not a supported scheme" % (scheme))
 
         host_addr = (
             parsed_url.hostname.lower(),
@@ -150,7 +150,7 @@ class Session:
             proxy_type = protocol_to_proxy_type.get(proxy.scheme.lower())
 
             if proxy_type is None:
-                raise Exception("'%s' is not a supported proxy scheme" % (
+                raise UnsupportedScheme("'%s' is not a supported proxy scheme" % (
                     proxy.scheme))
 
             sock.set_proxy(
@@ -201,7 +201,7 @@ class Session:
         resp = conn.recv(self.max_chunk_size)
 
         if len(resp) == 0:
-            raise RequestException("Empty response from server")
+            raise EmptyResponse("Empty response from server")
 
         resp, data = resp.split(b"\r\n\r\n", 1)
         resp = resp.decode()
@@ -254,7 +254,7 @@ class Session:
         elif encoding == "deflate":
             content = zlib.compress(content)
         else:
-            raise RequestException(
+            raise UnsupportedEncoding(
                 "Unknown encoding type '%s' while encoding content" % (encoding))
         
         return content
@@ -267,7 +267,7 @@ class Session:
         elif encoding == "deflate":
             content = zlib.decompress(content)
         else:
-            raise RequestException(
+            raise UnsupportedEncoding(
                 "Unknown encoding type '%s' while decoding content" % (encoding))
         
         return content
