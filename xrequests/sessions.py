@@ -52,9 +52,7 @@ class Session:
 
 
     def __exit__(self, *_):
-        addrs = list(self._addr_to_conn)
-        while addrs:
-            self.close(addrs.pop())
+        self.close()
 
 
     def request(self, method, url, headers=None, content=None, timeout=None,
@@ -158,17 +156,17 @@ class Session:
         return self.request("DELETE", url, **kwargs)
 
 
-    def close(self, addr):
-        if not addr in self._addr_to_conn:
-            return
-
-        sock = self._addr_to_conn[addr]
-        try:
-            sock.shutdown(socket.SHUT_RDWR)
-        except OSError:
-            pass
-        sock.close()
-        self._addr_to_conn.pop(addr, None)
+    def close(self):
+        addrs = list(self._addr_to_conn)
+        while addrs:
+            addr = addrs.pop()
+            sock = self._addr_to_conn[addr]
+            try:
+                sock.shutdown(socket.SHUT_RDWR)
+            except OSError:
+                pass
+            sock.close()
+            self._addr_to_conn.pop(addr, None)
 
 
     def _create_socket(self, dest_addr, proxy=None, timeout=None,
