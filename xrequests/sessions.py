@@ -25,24 +25,28 @@ scheme_to_port = {
 class Session:
     def __init__(self, proxy_url=None, timeout=None, chunk_size=None,
                  decode_content=None, encode_content=None, ssl_verify=None):
+        proxy = urlsplit(proxy_url) if proxy_url is not None else None
         timeout = timeout if timeout is not None else 60
         chunk_size = chunk_size if chunk_size is not None else (1024 ** 2)
         decode_content = decode_content if decode_content is not None else True
         encode_content = encode_content if encode_content is not None else True
         ssl_verify = ssl_verify if ssl_verify is not None else True
 
-        self.proxy_url = proxy_url
+        if proxy and proxy.scheme not in protocol_to_proxy_type:
+            raise UnsupportedScheme("'%s' is not a supported proxy scheme" % (
+                proxy.scheme))
+                
         self.timeout = timeout
         self.max_chunk_size = chunk_size
         self.decode_content = decode_content
         self.encode_content = encode_content
         self.ssl_verify = ssl_verify
-        self._proxy = urlsplit(proxy_url) if proxy_url is not None else None
+        self._proxy = proxy
         self._addr_to_conn = {}
         self._verified_context = ssl.create_default_context()
         self._unverified_context = ssl._create_unverified_context()
+                
 
-    
     def __enter__(self):
         return self
 
@@ -170,14 +174,8 @@ class Session:
             sock.settimeout(timeout)
         
         if self._proxy is not None:
-            proxy_type = protocol_to_proxy_type.get(self._proxy.scheme.lower())
-
-            if proxy_type is None:
-                raise UnsupportedScheme("'%s' is not a supported proxy scheme" % (
-                    self._proxy.scheme))
-
             sock.set_proxy(
-                proxy_type,
+                protocol_to_proxy_type[self._proxy.scheme],
                 addr=self._proxy.hostname,
                 port=self._proxy.port,
                 username=self._proxy.username,
