@@ -86,6 +86,7 @@ class Session:
         if content is not None:
             if not isinstance(content, bytes):
                 content = content.encode("utf-8")
+                
             if not "Content-Length" in headers:
                 headers["Content-Length"] = "%d" % len(content)
         
