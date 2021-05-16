@@ -238,7 +238,12 @@ class Session:
         for header in raw_headers.splitlines():
             header, value = header.split(":", 1)
             value = value.lstrip(" ")
-            headers[header] = value
+            if header in headers:
+                if isinstance(headers[header], str):
+                    headers[header] = [headers[header]]
+                headers[header].append(value)
+            else:
+                headers[header] = value
         
         # download chunks until content-length is met
         if "content-length" in headers:
