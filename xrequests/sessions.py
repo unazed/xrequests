@@ -2,11 +2,11 @@ from .exceptions import *
 from .structures import CaseInsensitiveDict
 from .models import Response
 from urllib.parse import urlsplit
+import brotli
+import gzip
 import socks
 import socket
 import ssl
-import brotli
-import gzip
 import zlib
 
 scheme_to_proxy_type = {
