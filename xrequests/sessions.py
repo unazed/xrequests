@@ -9,7 +9,7 @@ import brotli
 import gzip
 import zlib
 
-protocol_to_proxy_type = {
+scheme_to_proxy_type = {
     "http": socks.HTTP,
     "https": socks.HTTP,
     "socks": socks.SOCKS4,
@@ -32,10 +32,10 @@ class Session:
         encode_content = encode_content if encode_content is not None else True
         ssl_verify = ssl_verify if ssl_verify is not None else True
 
-        if proxy and proxy.scheme not in protocol_to_proxy_type:
+        if proxy and proxy.scheme not in scheme_to_proxy_type:
             raise UnsupportedScheme("'%s' is not a supported proxy scheme" % (
                 proxy.scheme))
-                
+
         self.timeout = timeout
         self.max_chunk_size = chunk_size
         self.decode_content = decode_content
@@ -175,7 +175,7 @@ class Session:
         
         if self._proxy is not None:
             sock.set_proxy(
-                protocol_to_proxy_type[self._proxy.scheme],
+                scheme_to_proxy_type[self._proxy.scheme],
                 addr=self._proxy.hostname,
                 port=self._proxy.port,
                 username=self._proxy.username,
