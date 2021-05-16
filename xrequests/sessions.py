@@ -52,7 +52,7 @@ class Session:
 
 
     def __exit__(self, *_):
-        self.close()
+        self.clear()
 
 
     def request(self, method, url, headers=None, content=None, timeout=None,
@@ -156,7 +156,7 @@ class Session:
         return self.request("DELETE", url, **kwargs)
 
 
-    def close(self):
+    def clear(self):
         addrs = list(self._addr_to_conn)
         while addrs:
             addr = addrs.pop()
