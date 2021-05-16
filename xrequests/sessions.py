@@ -78,6 +78,9 @@ class Session:
 
         if not "Host" in headers:
             headers["Host"] = parsed_url.hostname
+
+        if content is not None and not "Content-Length" in headers:
+            headers["Content-Length"] = "%d" % len(content)
         
         request = self._prepare_request(
             method=method,
