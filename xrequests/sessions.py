@@ -112,7 +112,7 @@ class Session:
                         ssl_verify=ssl_verify)
                     self._addr_to_conn[host_addr] = conn
                 else:
-                    if timeout:
+                    if timeout is not None:
                         conn.settimeout(timeout)
                 
                 self._send(conn, request)
