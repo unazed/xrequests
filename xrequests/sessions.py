@@ -1,7 +1,7 @@
 from .exceptions import *
 from .structures import CaseInsensitiveDict
 from .models import Response
-from urllib.parse import urlparse
+from urllib.parse import urlsplit
 import socks
 import socket
 import ssl
@@ -37,7 +37,7 @@ class Session:
         self.decode_content = decode_content
         self.encode_content = encode_content
         self.ssl_verify = ssl_verify
-        self._proxy = urlparse(proxy_url) if proxy_url is not None else None
+        self._proxy = urlsplit(proxy_url) if proxy_url is not None else None
         self._addr_to_conn = {}
         self._verified_context = ssl.create_default_context()
         self._unverified_context = ssl._create_unverified_context()
@@ -55,7 +55,7 @@ class Session:
 
     def request(self, method, url, headers=None, content=None, timeout=None,
                 version=None, ssl_verify=None):
-        parsed_url = urlparse(url)
+        parsed_url = urlsplit(url)
         scheme = parsed_url.scheme.lower()
 
         if not scheme in scheme_to_port:
@@ -170,19 +170,18 @@ class Session:
             sock.settimeout(timeout)
         
         if self._proxy is not None:
-            proxy = urlparse(self._proxy)
-            proxy_type = protocol_to_proxy_type.get(proxy.scheme.lower())
+            proxy_type = protocol_to_proxy_type.get(self._proxy.scheme.lower())
 
             if proxy_type is None:
                 raise UnsupportedScheme("'%s' is not a supported proxy scheme" % (
-                    proxy.scheme))
+                    self._proxy.scheme))
 
             sock.set_proxy(
                 proxy_type,
-                addr=proxy.hostname,
-                port=proxy.port,
-                username=proxy.username,
-                password=proxy.password,
+                addr=self._proxy.hostname,
+                port=self._proxy.port,
+                username=self._proxy.username,
+                password=self._proxy.password,
                 rdns=False
             )
 
