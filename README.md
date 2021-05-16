@@ -25,9 +25,6 @@ Supports:
 - Brotli, gzip and deflate compression algorithms
 - Unverified SSL via `ssl_verify=False`
 
-To be implemented:
-
-
 # Installation
 ```bash
 pip install -U git+https://github.com/h0nde/xrequests.git
