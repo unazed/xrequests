@@ -86,7 +86,7 @@ class Session:
         if content is not None:
             if not isinstance(content, bytes):
                 content = content.encode("utf-8")
-                
+
             if not "Content-Length" in headers:
                 headers["Content-Length"] = "%d" % len(content)
         
@@ -170,12 +170,10 @@ class Session:
 
     def _create_socket(self, dest_addr, proxy=None, timeout=None,
                        ssl_wrap=True, ssl_verify=True):
-        sock = socks.socksocket()
-
-        if timeout:
-            sock.settimeout(timeout)
-        
-        if proxy is not None:
+        if proxy is None:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        else:
+            sock = socks.socksocket()
             sock.set_proxy(
                 scheme_to_proxy_type[proxy.scheme],
                 addr=proxy.hostname,
@@ -185,12 +183,14 @@ class Session:
                 rdns=False
             )
 
+        if timeout:
+            sock.settimeout(timeout)
+
         sock.connect(dest_addr)
 
         if ssl_wrap:
             context = self._verified_context \
                       if ssl_verify else self._unverified_context
-
             sock = context.wrap_socket(
                 sock,
                 server_hostname=dest_addr[0])
@@ -240,6 +240,7 @@ class Session:
                 value = value[1:]
             headers[header] = value
         
+        # download chunks until content-length is met
         if "content-length" in headers:
             goal = int(headers["content-length"])
             while goal > len(data):
@@ -247,7 +248,8 @@ class Session:
                 if len(chunk) == 0:
                     raise RequestException("Empty chunk")
                 data += chunk
-    
+        
+        # download chunks until "0\r\n\r\n" is recv'd, then process them
         elif headers.get("transfer-encoding") == "chunked":
             while True:
                 chunk = conn.recv(self.max_chunk_size)
@@ -263,6 +265,7 @@ class Session:
                 chunk, raw = raw[:length], raw[length+2:]
                 data += chunk
 
+        # download chunks until chunk is empty
         else:
             while True:
                 chunk = conn.recv(self.max_chunk_size)
@@ -275,7 +278,7 @@ class Session:
 
         return int(status), message, headers, data
 
-
+    @staticmethod
     def _encode_content(self, content, encoding):
         if encoding == "br":
             content = brotli.compress(content)
@@ -289,7 +292,8 @@ class Session:
         
         return content
 
-    def _decode_content(self, content, encoding):
+    @staticmethod
+    def _decode_content(content, encoding):
         if encoding == "br":
             content = brotli.decompress(content)
         elif encoding == "gzip":
