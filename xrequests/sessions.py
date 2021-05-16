@@ -48,7 +48,8 @@ class Session:
 
 
     def __exit__(self, *_):
-        return
+        for addr in list(self._addr_to_conn):
+            self.close(addr)
 
 
     def request(self, method, url, headers=None, content=None, timeout=None,
