@@ -169,7 +169,7 @@ class Session:
 
 
     def _create_socket(self, dest_addr, proxy=None, timeout=None,
-                       ssl_wrap=True, ssl_verify=True):
+                       ssl_wrap=True, ssl_verify=True, remote_dns=False):
         if proxy is None:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         else:
@@ -180,7 +180,7 @@ class Session:
                 port=proxy.port,
                 username=proxy.username,
                 password=proxy.password,
-                rdns=False
+                rdns=remote_dns
             )
 
         if timeout:
