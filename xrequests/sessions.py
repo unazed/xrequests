@@ -111,6 +111,9 @@ class Session:
                         ssl_wrap=("https" == scheme),
                         ssl_verify=ssl_verify)
                     self._addr_to_conn[host_addr] = conn
+                else:
+                    if timeout:
+                        conn.settimeout(timeout)
                 
                 self._send(conn, request)
                 return Response(*self._get_response(conn))
