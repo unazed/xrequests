@@ -105,6 +105,7 @@ class Session:
                 if conn is None:
                     conn = self._create_socket(
                         host_addr,
+                        proxy=self._proxy,
                         timeout=timeout or self.timeout,
                         ssl_wrap=("https" == scheme),
                         ssl_verify=ssl_verify)
@@ -166,20 +167,20 @@ class Session:
         self._addr_to_conn.pop(addr, None)
 
 
-    def _create_socket(self, dest_addr, timeout=None, ssl_wrap=True,
-                       ssl_verify=True):
+    def _create_socket(self, dest_addr, proxy=None, timeout=None,
+                       ssl_wrap=True, ssl_verify=True):
         sock = socks.socksocket()
 
         if timeout:
             sock.settimeout(timeout)
         
-        if self._proxy is not None:
+        if proxy is not None:
             sock.set_proxy(
-                scheme_to_proxy_type[self._proxy.scheme],
-                addr=self._proxy.hostname,
-                port=self._proxy.port,
-                username=self._proxy.username,
-                password=self._proxy.password,
+                scheme_to_proxy_type[proxy.scheme],
+                addr=proxy.hostname,
+                port=proxy.port,
+                username=proxy.username,
+                password=proxy.password,
                 rdns=False
             )
 
