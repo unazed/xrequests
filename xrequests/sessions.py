@@ -265,7 +265,7 @@ class Session:
                 chunk, raw = raw[:length], raw[length+2:]
                 data += chunk
 
-        # download chunks until chunk is empty
+        # download chunks until recv is empty
         else:
             while True:
                 chunk = conn.recv(self.max_chunk_size)
