@@ -105,7 +105,7 @@ class Session:
                     conn = self._create_socket(
                         host_addr,
                         proxy=self._proxy,
-                        timeout=timeout or self.timeout,
+                        timeout=timeout if timeout is not None else self.timeout,
                         ssl_wrap=("https" == scheme),
                         ssl_verify=ssl_verify)
                     self._addr_to_conn[host_addr] = conn
