@@ -57,7 +57,8 @@ class Session:
         scheme = parsed_url.scheme.lower()
 
         if not scheme in scheme_to_port:
-            raise UnsupportedScheme("'%s' is not a supported scheme" % (scheme))
+            raise UnsupportedScheme("'%s' is not a supported scheme" % (
+                scheme))
 
         host_addr = (
             parsed_url.hostname.lower(),
