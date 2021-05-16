@@ -237,8 +237,7 @@ class Session:
         headers = CaseInsensitiveDict()
         for header in raw_headers.splitlines():
             header, value = header.split(":", 1)
-            if value.startswith(" "):
-                value = value[1:]
+            value = value.lstrip(" ")
             headers[header] = value
         
         # download chunks until content-length is met
