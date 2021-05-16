@@ -86,7 +86,7 @@ class Session:
                 content = content.encode("utf-8")
 
             if not "Content-Length" in headers:
-                headers["Content-Length"] = "%d" % len(content)
+                headers["Content-Length"] = int(len(content))
         
         request = self._prepare_request(
             method=method,
