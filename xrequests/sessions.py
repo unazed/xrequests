@@ -39,7 +39,7 @@ class Session:
                 if proxy.scheme not in scheme_to_proxy_type:
                     raise UnsupportedScheme("'%s' is not a supported proxy scheme" % (
                         proxy.scheme))
-                proxies[scheme] = proxy_url
+                proxies[scheme] = proxy
         else:
             proxies = {}
 
