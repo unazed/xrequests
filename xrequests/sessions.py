@@ -23,23 +23,31 @@ scheme_to_port = {
 }
 
 class Session:
-    def __init__(self, proxy_url=None, timeout=None, chunk_size=None,
-                 decode_content=None, ssl_verify=None):
-        proxy = urlsplit(proxy_url) if proxy_url is not None else None
+    def __init__(self, proxies=None, timeout=None, chunk_size=None,
+                 decode_content=None, verify=None):
         timeout = timeout if timeout is not None else 60
         chunk_size = chunk_size if chunk_size is not None else (1024 ** 2)
         decode_content = decode_content if decode_content is not None else True
-        ssl_verify = ssl_verify if ssl_verify is not None else True
+        verify = verify if verify is not None else True
 
-        if proxy and proxy.scheme not in scheme_to_proxy_type:
-            raise UnsupportedScheme("'%s' is not a supported proxy scheme" % (
-                proxy.scheme))
+        if proxies:
+            for scheme, proxy_url in proxies.items():
+                proxy = urlsplit(proxy_url)
+                if scheme not in scheme_to_port:
+                    raise UnsupportedScheme("'%s' is not a supported scheme" % (
+                        scheme))
+                if proxy.scheme not in scheme_to_proxy_type:
+                    raise UnsupportedScheme("'%s' is not a supported proxy scheme" % (
+                        proxy.scheme))
+                proxies[scheme] = proxy_url
+        else:
+            proxies = {}
 
         self.timeout = timeout
         self.max_chunk_size = chunk_size
         self.decode_content = decode_content
-        self.ssl_verify = ssl_verify
-        self._proxy = proxy
+        self.verify = verify
+        self._proxies = proxies
         self._addr_to_conn = {}
         self._verified_context = ssl.create_default_context()
         self._unverified_context = ssl._create_unverified_context()
@@ -67,15 +75,15 @@ class Session:
 
 
     def request(self, method, url, headers=None, content=None, timeout=None,
-                version=None, ssl_verify=None):
+                version=None, verify=None):
         parsed_url = urlsplit(url)
 
         if not parsed_url.scheme in scheme_to_port:
             raise UnsupportedScheme("'%s' is not a supported scheme" % (
                 scheme))
         
-        if ssl_verify is None:
-            ssl_verify = self.ssl_verify
+        if verify is None:
+            verify = self.verify
 
         if version is None:
             version = "1.1"
@@ -113,10 +121,10 @@ class Session:
                 if conn is None:
                     conn = self._create_socket(
                         host_addr,
-                        proxy=self._proxy,
+                        proxy=self._proxies.get(parsed_url.scheme),
                         timeout=timeout if timeout is not None else self.timeout,
                         ssl_wrap=("https" == parsed_url.scheme),
-                        ssl_verify=ssl_verify)
+                        ssl_verify=verify)
                     self._addr_to_conn[host_addr] = conn
                 else:
                     if timeout is not None:
