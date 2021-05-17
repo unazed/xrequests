@@ -275,6 +275,7 @@ class Session:
 
         return Response(int(status), message, headers, data)
 
+
     @staticmethod
     def _decode_content(content, encoding):
         if encoding == "br":
