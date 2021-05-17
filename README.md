@@ -7,7 +7,6 @@ import xrequests
 session = xrequests.Session(proxy_url=None, timeout=5)
 
 resp = session.get("https://api.ipify.org/?format=json")
-print(resp.status)
 print(resp.json())
 ```
 
