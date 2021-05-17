@@ -20,9 +20,9 @@ Some quirks:
 - All exceptions are wrapped under `RequestException`, even ones from third-party modules
 
 Supports:
-- HTTP, SOCKS4 and SOCKS5 proxies via `proxy_url`
+- HTTP, SOCKS4 and SOCKS5 proxies
 - Brotli, gzip and deflate compression algorithms
-- Unverified SSL via `ssl_verify=False`
+- Unverified SSL
 
 # Installation
 ```bash
