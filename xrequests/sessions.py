@@ -122,7 +122,7 @@ class Session:
                     if timeout is not None:
                         conn.settimeout(timeout)
                 
-                self._send(conn, request)
+                conn.send(request)
                 return Response(*self._get_response(conn))
 
             except Exception as err:
@@ -212,11 +212,6 @@ class Session:
             request += content
 
         return request
-
-
-    @staticmethod
-    def _send(conn, data):
-        conn.send(data)
 
 
     def _get_response(self, conn):
