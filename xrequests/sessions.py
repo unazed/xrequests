@@ -70,15 +70,14 @@ class Session:
     def request(self, method, url, headers=None, content=None, timeout=None,
                 version=None, ssl_verify=None):
         parsed_url = urlsplit(url)
-        scheme = parsed_url.scheme.lower()
 
-        if not scheme in scheme_to_port:
+        if not parsed_url.scheme in scheme_to_port:
             raise UnsupportedScheme("'%s' is not a supported scheme" % (
                 scheme))
 
         host_addr = (
             parsed_url.hostname.lower(),
-            parsed_url.port or scheme_to_port[scheme]
+            parsed_url.port or scheme_to_port[parsed_url.scheme]
         )
         
         if ssl_verify is None:
@@ -118,7 +117,7 @@ class Session:
                         host_addr,
                         proxy=self._proxy,
                         timeout=timeout if timeout is not None else self.timeout,
-                        ssl_wrap=("https" == scheme),
+                        ssl_wrap=("https" == parsed_url.scheme),
                         ssl_verify=ssl_verify)
                     self._addr_to_conn[host_addr] = conn
                 else:
