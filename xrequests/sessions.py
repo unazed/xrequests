@@ -108,8 +108,8 @@ class Session:
         conn_reused = host_addr in self._addr_to_conn
         request = self._prepare_request(
             method=method,
-            path=parsed_url.path \
-                + ("?" + parsed_url.query if parsed_url.query else ""),
+            path=(parsed_url.path \
+                + ("?" + parsed_url.query if parsed_url.query else "")) or "/",
             version=version,
             headers=headers,
             content=content
