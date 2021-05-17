@@ -123,7 +123,7 @@ class Session:
                         conn.settimeout(timeout)
                 
                 conn.send(request)
-                return self._get_response(conn)
+                return self._get_response(conn, self.max_chunk_size)
 
             except Exception as err:
                 if host_addr in self._addr_to_conn:
@@ -213,9 +213,9 @@ class Session:
 
         return request
 
-
-    def _get_response(self, conn):
-        resp = conn.recv(self.max_chunk_size)
+    @staticmethod
+    def _get_response(self, conn, max_chunk_size):
+        resp = conn.recv(max_chunk_size)
 
         if len(resp) == 0:
             raise EmptyResponse("Empty response from server")
@@ -240,7 +240,7 @@ class Session:
         if "content-length" in headers:
             goal = int(headers["content-length"])
             while goal > len(data):
-                chunk = conn.recv(min(goal-len(data), self.max_chunk_size))
+                chunk = conn.recv(min(goal-len(data), max_chunk_size))
                 if len(chunk) == 0:
                     raise RequestException("Empty chunk")
                 data += chunk
@@ -248,7 +248,7 @@ class Session:
         # download chunks until "0\r\n\r\n" is recv'd, then process them
         elif headers.get("transfer-encoding") == "chunked":
             while True:
-                chunk = conn.recv(self.max_chunk_size)
+                chunk = conn.recv(max_chunk_size)
                 if len(chunk) == 0 or chunk == b"0\r\n\r\n":
                     break
                 data += chunk
@@ -264,7 +264,7 @@ class Session:
         # download chunks until recv is empty
         else:
             while True:
-                chunk = conn.recv(self.max_chunk_size)
+                chunk = conn.recv(max_chunk_size)
                 if len(chunk) == 0:
                     break
                 data += chunk
