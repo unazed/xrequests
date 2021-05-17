@@ -74,11 +74,6 @@ class Session:
         if not parsed_url.scheme in scheme_to_port:
             raise UnsupportedScheme("'%s' is not a supported scheme" % (
                 scheme))
-
-        host_addr = (
-            parsed_url.hostname.lower(),
-            parsed_url.port or scheme_to_port[parsed_url.scheme]
-        )
         
         if ssl_verify is None:
             ssl_verify = self.ssl_verify
@@ -98,7 +93,12 @@ class Session:
 
             if not "Content-Length" in headers:
                 headers["Content-Length"] = int(len(content))
-        
+
+        host_addr = (
+            parsed_url.hostname.lower(),
+            parsed_url.port or scheme_to_port[parsed_url.scheme]
+        )
+        conn_reused = host_addr in self._addr_to_conn
         request = self._prepare_request(
             method=method,
             path=parsed_url.path \
@@ -107,8 +107,7 @@ class Session:
             headers=headers,
             content=content
         )
-        
-        conn_reused = host_addr in self._addr_to_conn
+
         while True:
             try:
                 conn = self._addr_to_conn.get(host_addr)
