@@ -123,7 +123,8 @@ class Session:
                         conn.settimeout(timeout)
                 
                 conn.send(request)
-                return self._get_response(conn, self.max_chunk_size)
+                return self._get_response(conn, self.max_chunk_size,
+                                          self.decode_content)
 
             except Exception as err:
                 if host_addr in self._addr_to_conn:
@@ -214,7 +215,7 @@ class Session:
         return request
 
     @staticmethod
-    def _get_response(self, conn, max_chunk_size):
+    def _get_response(self, conn, max_chunk_size, decode_content):
         resp = conn.recv(max_chunk_size)
 
         if len(resp) == 0:
@@ -269,7 +270,7 @@ class Session:
                     break
                 data += chunk
 
-        if "content-encoding" in headers and self.decode_content:
+        if "content-encoding" in headers and decode_content:
             data = self._decode_content(data, headers["content-encoding"])
 
         return Response(int(status), message, headers, data)
