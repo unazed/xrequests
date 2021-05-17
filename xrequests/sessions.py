@@ -195,7 +195,8 @@ class Session:
         return sock
 
 
-    def _prepare_request(self, method, path, version, headers, content):
+    @staticmethod
+    def _prepare_request(method, path, version, headers, content):
         request = "%s %s HTTP/%s\r\n" % (
             method, path, version)
 
