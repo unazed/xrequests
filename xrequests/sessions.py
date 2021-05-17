@@ -54,6 +54,19 @@ class Session:
         self.clear()
 
 
+    def clear(self):
+        addrs = list(self._addr_to_conn)
+        while addrs:
+            addr = addrs.pop()
+            sock = self._addr_to_conn[addr]
+            try:
+                sock.shutdown(socket.SHUT_RDWR)
+            except OSError:
+                pass
+            sock.close()
+            self._addr_to_conn.pop(addr, None)
+
+
     def request(self, method, url, headers=None, content=None, timeout=None,
                 version=None, ssl_verify=None):
         parsed_url = urlsplit(url)
@@ -153,19 +166,6 @@ class Session:
 
     def delete(self, url, **kwargs):
         return self.request("DELETE", url, **kwargs)
-
-
-    def clear(self):
-        addrs = list(self._addr_to_conn)
-        while addrs:
-            addr = addrs.pop()
-            sock = self._addr_to_conn[addr]
-            try:
-                sock.shutdown(socket.SHUT_RDWR)
-            except OSError:
-                pass
-            sock.close()
-            self._addr_to_conn.pop(addr, None)
 
 
     def _create_socket(self, dest_addr, proxy=None, timeout=None,
