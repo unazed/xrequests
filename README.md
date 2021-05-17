@@ -4,7 +4,7 @@ A lazy, minimalist, but fast HTTP request module for Python 3.4+
 ```python
 import xrequests
 
-session = xrequests.Session(proxy_url=None, timeout=5)
+session = xrequests.Session(proxies={}, timeout=5)
 
 resp = session.get("https://api.ipify.org/?format=json")
 print(resp.json())
