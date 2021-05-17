@@ -30,18 +30,21 @@ class Session:
         decode_content = decode_content if decode_content is not None else True
         verify = verify if verify is not None else True
 
-        if proxies:
+        if proxies is None:
+            proxies = {}
+        else:
             for scheme, proxy_url in proxies.items():
                 proxy = urlsplit(proxy_url)
+
                 if scheme not in scheme_to_port:
                     raise UnsupportedScheme("'%s' is not a supported scheme" % (
                         scheme))
+
                 if proxy.scheme not in scheme_to_proxy_type:
                     raise UnsupportedScheme("'%s' is not a supported proxy scheme" % (
                         proxy.scheme))
+
                 proxies[scheme] = proxy
-        else:
-            proxies = {}
 
         self.timeout = timeout
         self.max_chunk_size = chunk_size
