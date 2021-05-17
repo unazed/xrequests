@@ -29,7 +29,6 @@ class Session:
         timeout = timeout if timeout is not None else 60
         chunk_size = chunk_size if chunk_size is not None else (1024 ** 2)
         decode_content = decode_content if decode_content is not None else True
-        encode_content = encode_content if encode_content is not None else True
         ssl_verify = ssl_verify if ssl_verify is not None else True
 
         if proxy and proxy.scheme not in scheme_to_proxy_type:
