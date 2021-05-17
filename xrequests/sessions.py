@@ -123,7 +123,7 @@ class Session:
                         conn.settimeout(timeout)
                 
                 conn.send(request)
-                return Response(*self._get_response(conn))
+                return self._get_response(conn)
 
             except Exception as err:
                 if host_addr in self._addr_to_conn:
@@ -272,7 +272,7 @@ class Session:
         if "content-encoding" in headers and self.decode_content:
             data = self._decode_content(data, headers["content-encoding"])
 
-        return int(status), message, headers, data
+        return Response(int(status), message, headers, data)
 
     @staticmethod
     def _decode_content(content, encoding):
