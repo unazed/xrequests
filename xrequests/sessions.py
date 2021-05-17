@@ -214,7 +214,8 @@ class Session:
         return request
 
 
-    def _send(self, conn, data):
+    @staticmethod
+    def _send(conn, data):
         conn.send(data)
 
 
