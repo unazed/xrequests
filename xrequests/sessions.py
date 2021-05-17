@@ -215,7 +215,7 @@ class Session:
         return request
 
     @staticmethod
-    def _get_response(self, conn, max_chunk_size, decode_content):
+    def _get_response(conn, max_chunk_size, decode_content):
         resp = conn.recv(max_chunk_size)
 
         if len(resp) == 0:
