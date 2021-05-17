@@ -24,7 +24,7 @@ scheme_to_port = {
 
 class Session:
     def __init__(self, proxy_url=None, timeout=None, chunk_size=None,
-                 decode_content=None, encode_content=None, ssl_verify=None):
+                 decode_content=None, ssl_verify=None):
         proxy = urlsplit(proxy_url) if proxy_url is not None else None
         timeout = timeout if timeout is not None else 60
         chunk_size = chunk_size if chunk_size is not None else (1024 ** 2)
@@ -39,7 +39,6 @@ class Session:
         self.timeout = timeout
         self.max_chunk_size = chunk_size
         self.decode_content = decode_content
-        self.encode_content = encode_content
         self.ssl_verify = ssl_verify
         self._proxy = proxy
         self._addr_to_conn = {}
@@ -212,8 +211,6 @@ class Session:
         request = request.encode("UTF-8")
 
         if content is not None:
-            if "content-encoding" in headers and self.encode_content:
-                content = self._encode_content(content, headers["content-encoding"])
             request += content
 
         return request
@@ -282,20 +279,6 @@ class Session:
             data = self._decode_content(data, headers["content-encoding"])
 
         return int(status), message, headers, data
-
-    @staticmethod
-    def _encode_content(self, content, encoding):
-        if encoding == "br":
-            content = brotli.compress(content)
-        elif encoding == "gzip":
-            content = gzip.compress(content)
-        elif encoding == "deflate":
-            content = zlib.compress(content)
-        else:
-            raise UnsupportedEncoding(
-                "Unknown encoding type '%s' while encoding content" % (encoding))
-        
-        return content
 
     @staticmethod
     def _decode_content(content, encoding):
