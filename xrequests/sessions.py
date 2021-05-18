@@ -50,7 +50,7 @@ class Session:
         self.max_chunk_size = chunk_size
         self.decode_content = decode_content
         self.verify = verify
-        self._proxies = proxies
+        self._scheme_to_proxy = proxies
         self._addr_to_conn = {}
         self._verified_context = ssl.create_default_context()
         self._unverified_context = ssl._create_unverified_context()
@@ -124,7 +124,7 @@ class Session:
                 if conn is None:
                     conn = self._create_socket(
                         host_addr,
-                        proxy=self._proxies.get(parsed_url.scheme),
+                        proxy=self._scheme_to_proxy.get(parsed_url.scheme),
                         timeout=timeout if timeout is not None else self.timeout,
                         ssl_wrap=("https" == parsed_url.scheme),
                         ssl_verify=verify)
