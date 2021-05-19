@@ -202,7 +202,7 @@ class Session:
         if ssl_wrap:
             context = self._verified_context \
                       if ssl_verify else self._unverified_context
-            if ciphers:
+            if ciphers is not None:
                 context.set_ciphers(ciphers)
             sock = context.wrap_socket(
                 sock,
