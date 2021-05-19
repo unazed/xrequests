@@ -78,7 +78,7 @@ class Session:
 
 
     def request(self, method, url, headers=None, data=None, timeout=None,
-                version=None, verify=None):
+                version=None, verify=None, ciphers=None):
         parsed_url = urlsplit(url)
 
         if not parsed_url.scheme in scheme_to_port:
@@ -127,7 +127,8 @@ class Session:
                         proxy=self._scheme_to_proxy.get(parsed_url.scheme),
                         timeout=timeout if timeout is not None else self.timeout,
                         ssl_wrap=("https" == parsed_url.scheme),
-                        ssl_verify=verify)
+                        ssl_verify=verify,
+                        ciphers=ciphers)
                     self._addr_to_conn[host_addr] = conn
                 else:
                     if timeout is not None:
@@ -178,7 +179,8 @@ class Session:
 
 
     def _create_socket(self, dest_addr, proxy=None, timeout=None,
-                       ssl_wrap=True, ssl_verify=True, remote_dns=False):
+                       ssl_wrap=True, ssl_verify=True, remote_dns=False,
+                       ciphers=None):
         if proxy is None:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         else:
@@ -202,7 +204,8 @@ class Session:
                       if ssl_verify else self._unverified_context
             sock = context.wrap_socket(
                 sock,
-                server_hostname=dest_addr[0])
+                server_hostname=dest_addr[0],
+                ciphers=ciphers)
 
         return sock
 
