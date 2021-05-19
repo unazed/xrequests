@@ -202,10 +202,11 @@ class Session:
         if ssl_wrap:
             context = self._verified_context \
                       if ssl_verify else self._unverified_context
+            if ciphers:
+                context.set_ciphers(ciphers)
             sock = context.wrap_socket(
                 sock,
-                server_hostname=dest_addr[0],
-                ciphers=ciphers)
+                server_hostname=dest_addr[0])
 
         return sock
 
