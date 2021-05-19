@@ -77,7 +77,7 @@ class Session:
             self._addr_to_conn.pop(addr, None)
 
 
-    def request(self, method, url, headers=None, content=None, timeout=None,
+    def request(self, method, url, headers=None, data=None, timeout=None,
                 version=None, verify=None):
         parsed_url = urlsplit(url)
 
@@ -97,12 +97,12 @@ class Session:
         if not "Host" in headers:
             headers["Host"] = parsed_url.hostname
 
-        if content is not None:
-            if not isinstance(content, bytes):
-                content = content.encode("utf-8")
+        if data is not None:
+            if not isinstance(data, bytes):
+                content = data.encode("utf-8")
 
             if not "Content-Length" in headers:
-                headers["Content-Length"] = int(len(content))
+                headers["Content-Length"] = int(len(data))
 
         host_addr = (
             parsed_url.hostname.lower(),
@@ -115,7 +115,7 @@ class Session:
                 + ("?" + parsed_url.query if parsed_url.query else "")) or "/",
             version=version,
             headers=headers,
-            content=content
+            body=data
         )
 
         while True:
@@ -208,7 +208,7 @@ class Session:
 
 
     @staticmethod
-    def _prepare_request(method, path, version, headers, content):
+    def _prepare_request(method, path, version, headers, body):
         request = "%s %s HTTP/%s\r\n" % (
             method, path, version)
 
@@ -220,8 +220,8 @@ class Session:
         request += "\r\n"
         request = request.encode("UTF-8")
 
-        if content is not None:
-            request += content
+        if body is not None:
+            request += body
 
         return request
 
