@@ -81,7 +81,7 @@ class Session:
                 version=None, verify=None, ciphers=None):
         parsed_url = urlsplit(url)
 
-        if not parsed_url.scheme in scheme_to_port:
+        if parsed_url.scheme not in scheme_to_port:
             raise UnsupportedScheme("'%s' is not a supported scheme" % (
                 scheme))
         
@@ -101,7 +101,7 @@ class Session:
             if not isinstance(data, bytes):
                 data = data.encode("utf-8")
 
-            if not "Content-Length" in headers:
+            if "Content-Length" not in headers:
                 headers["Content-Length"] = int(len(data))
 
         host_addr = (
