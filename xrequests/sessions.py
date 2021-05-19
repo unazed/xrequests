@@ -99,7 +99,7 @@ class Session:
 
         if data is not None:
             if not isinstance(data, bytes):
-                content = data.encode("utf-8")
+                data = data.encode("utf-8")
 
             if not "Content-Length" in headers:
                 headers["Content-Length"] = int(len(data))
