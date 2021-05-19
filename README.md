@@ -17,7 +17,7 @@ Popular modules such as [requests](https://github.com/psf/requests) don't perfor
 Some quirks:
 - `Session` instances are NOT thread-safe
 - No retry attempts will be made, unless a connection is established from a previous request
-- All exceptions are wrapped under `RequestException`, even ones from third-party modules
+- All raised exceptions are wrapped under `RequestException`
 
 Supports:
 - HTTP, SOCKS4 and SOCKS5 proxies
